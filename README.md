@@ -21,41 +21,45 @@ This is the official implementation of our AAAI 2025 paper:
 
 ---
 
-## ⚙️ Installation
-
-```bash
-git clone https://github.com/Pengfei-Hu/DocMamba.git
-cd DocMamba
-conda create -n docmamba python=3.9 -y
-conda activate docmamba
-pip install -r requirements.txt
-```
-
 ### 📦 Dependencies
 
 Core requirements include:
 
-- to add
-
-Please refer to `requirements.txt` for full details.
+- [**Mamba**](https://github.com/state-spaces/mamba)
+- [**Transformers**](https://github.com/huggingface/transformers)
 
 ---
 
 ## 🛠️ Usage
 
-### Pre-training
+
+### Step 1: Data Processing
+
+Prepare the training data using:
 
 ```bash
-to add
+python data_process/generate_data.py
 ```
 
-### Fine-tuning
+Modify it as needed to adapt to your own datasets.
+
+### Step 2: Pretraining
+
+Launch pretraining with:
 
 ```bash
-to add
+bash scripts/pretrain.sh
 ```
 
-For a minimal example of the architecture with reduced dependencies, refer to ./runner/example.py
+Again, feel free to adjust parameters in the script to fit your data and training setup.
+
+### 🔹 Quick Example
+
+For a minimal example of the model architecture with reduced dependencies, refer to:
+
+```
+./runner/example.py
+```
 
 
 ---
@@ -64,9 +68,9 @@ For a minimal example of the architecture with reduced dependencies, refer to ./
 
 The following strategies are crucial to ensure stable and efficient training:
 
-- ✅ **Whole Word Masking (WWM) Refinement**: Following standard MLM pre-training, an additional round using WWM further boosts model performance.
-- ✅ **Avoid `<pad>` Tokens** during batching: Do **not** pad short sequences up to the longest in a batch. Instead, **truncate longer sequences** to match the shortest. This avoids instability and NaN issues during training.
-- ✅ **Dynamic Bucketing Strategy**: Input sequences are grouped into non-overlapping buckets based on their lengths, with each bucket covering a fixed range of 64. Within each bucket, sequences are uniformly truncated to the same length, and the batch size is dynamically adjusted according to the formula `b = k / l`, where `k` is a tunable constant, `l` is the input length. See: `./libs/data/gma/bucket_sampler.py` for implementation details.
+- ✅ **Whole Word Masking (WWM) Refinement**: Following standard MLM pre-training, an additional round using WWM further boosts model performance. See `MLMProcessor` in `./libs/data/gma/transform.py`
+- ✅ **Avoid `<pad>` Tokens** during batching: Do **not** pad short sequences up to the longest in a batch. Instead, **truncate longer sequences** to match the shortest. This avoids instability and NaN issues during training. See `TokenProcessor` in `./libs/data/gma/transform.py`
+- ✅ **Dynamic Bucketing Strategy**: Input sequences are grouped into non-overlapping buckets based on their lengths, with each bucket covering a fixed range of 64. Within each bucket, sequences are uniformly truncated to the same length, and the batch size is dynamically adjusted according to the formula `b = k / l`, where `k` is a tunable constant, `l` is the input length. See `BucketSampler` in  `./libs/data/gma/bucket_sampler.py`
 
 ---
 
