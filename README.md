@@ -3,6 +3,10 @@
 This is the official implementation of our AAAI 2025 paper:  
 [**DocMamba: Efficient Document Pre-training with State Space Model**](https://ojs.aaai.org/index.php/AAAI/article/view/34584)
 
+<p align="center">
+  <img src="./imgs/logo.png" width="120"/>
+</p>
+
 ---
 
 ## 🧾 Overview
